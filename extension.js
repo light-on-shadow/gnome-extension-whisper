@@ -84,13 +84,20 @@ class WhisperIndicator extends PanelMenu.Button {
         this._icon.icon_name = 'microphone-sensitivity-muted-symbolic';
         this._icon.style = 'color: red;';
         this._startTime = GLib.get_monotonic_time();
-        this._updateTimer();
+        this._timerInterval = setInterval(() => {
+            this._updateTimer();
+        }, 1000);
     }
 
     async _stopRecording() {
         if (this._pipeline && this._recording) {
             this._pipeline.set_state(Gst.State.NULL);
             this._pipeline = null;
+        }
+
+        if (this._timerInterval) {
+            clearInterval(this._timerInterval);
+            this._timerInterval = null;
         }
 
         this._recording = false;
@@ -234,16 +241,17 @@ class WhisperIndicator extends PanelMenu.Button {
     }
 
     _updateTimer() {
-        if (this._recording) {
-            const elapsed = Math.floor((GLib.get_monotonic_time() - this._startTime) / 1000000);
-            this._timerLabel.text = `${elapsed}s`;
-
-            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
-                this._updateTimer();
-                return this._recording;
-            });
+        try {
+            if (this._recording) {
+                const elapsed = Math.floor((GLib.get_monotonic_time() - this._startTime) / 1000000);
+                this._timerLabel.text = `${elapsed}s`;
+            }
+        } catch (e) {
+            logError(e, 'Error in _updateTimer');
+            this._showNotification('Error updating timer');
         }
     }
+
 
     _showNotification(text) {
         Main.notify('Whisper', text);
