@@ -1,0 +1,14 @@
+<schemalist gettext-domain="gnome-shell-extensions">
+    <schema id="org.gnome.shell.extensions.whisper" path="/org/gnome/shell/extensions/whisper/">
+        <key name="openai-api-key" type="s">
+            <default>''</default>
+            <summary>OpenAI API Key</summary>
+            <description>The API key used to authenticate with OpenAI's Whisper API.</description>
+        </key>
+        <key name="api-endpoint" type="s">
+            <default>'https://api.openai.com/v1/'</default>
+            <summary>API Endpoint</summary>
+            <description>The API endpoint used to send transcription requests to OpenAI.</description>
+        </key>
+    </schema>
+</schemalist>

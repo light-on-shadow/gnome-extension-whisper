@@ -1,0 +1,8 @@
+{
+  "uuid": "whisper@DominicBoettger",
+  "name": "Whisper Recorder",
+  "description": "Records audio and transcribes it using OpenAI's Whisper API.",
+  "shell-version": [ "45", "46"],
+	"settings-schema": "org.gnome.shell.extensions.whisper",
+  "version": 1
+}
