@@ -9,9 +9,6 @@ import Gst from 'gi://Gst';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import Soup from 'gi://Soup';
 
-// Initialize GStreamer
-Gst.init(null);
-
 const WhisperIndicator = GObject.registerClass(
 class WhisperIndicator extends PanelMenu.Button {
     _init(settings) {
@@ -264,6 +261,9 @@ export default class WhisperExtension extends Extension {
     _settings;
 
     enable() {
+        // Initialize GStreamer
+        Gst.init(null);
+
         this._settings = this.getSettings();
         whisperIndicator = new WhisperIndicator(this._settings); // Pass settings to WhisperIndicator
         Main.panel.addToStatusArea('whisper-indicator', whisperIndicator);
@@ -271,8 +271,19 @@ export default class WhisperExtension extends Extension {
 
     disable() {
         if (whisperIndicator) {
+            // stop recording if it's in progress
+            if (whisperIndicator._recording) {
+                whisperIndicator._stopRecording();
+            }
+
+            // destroy the indicator
             whisperIndicator.destroy();
             whisperIndicator = null;
+        }
+
+        if(this._settings) {
+            // null out the settings
+            this._settings = null;
         }
     }
 }
