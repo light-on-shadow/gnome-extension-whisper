@@ -36,6 +36,13 @@ export default class WhisperPrefsWidget extends ExtensionPreferences {
         });
         apiGroup.add(apiEndpointRow);
 
+        // Save settings when the window is closed
+        window.connect('close-request', () => {
+            settings.set_string('openai-api-key', apiKeyRow.text);
+            settings.set_string('api-endpoint', apiEndpointRow.text);
+            log('Settings saved on window close');
+        });
+
         window.show();
     }
 }
